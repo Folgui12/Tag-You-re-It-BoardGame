@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Tag, You're It BoardGame.sln"
+    "dotnet.defaultSolution": "Tag You're It.sln"
 }
