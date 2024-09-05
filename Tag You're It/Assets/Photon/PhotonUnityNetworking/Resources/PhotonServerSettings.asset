@@ -39,6 +39,7 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
+  - PlayerJoinned
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0
