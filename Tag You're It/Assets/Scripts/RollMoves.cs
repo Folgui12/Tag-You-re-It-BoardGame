@@ -11,32 +11,12 @@ public class RollMoves : MonoBehaviour
 
     private Transform[] currentPoints;
     private int pointIndex;
-    
 
-    // Start is called before the first frame update
     void Start()
     {
         ResetRoll();
         StartCoroutine("RollDice");
     }
-
-    /*void Update()
-    {
-        if(pointer.gameObject.activeInHierarchy && pointer.position != currentPoints[pointIndex].position)
-        {
-            pointer.position = Vector3.MoveTowards(pointer.position, currentPoints[pointIndex].position, .01f);
-        }
-        else
-        {
-            pointIndex++;
-            
-            if(pointIndex == currentPoints.Length)
-            {
-                pointer.gameObject.SetActive(false);
-                ouijaBoard.SetActive(false);
-            }
-        }
-    }*/
 
     private void ResetRoll()
     {
@@ -58,11 +38,14 @@ public class RollMoves : MonoBehaviour
 
     IEnumerator RollDice()
     {
+        Number lastNumber = null;
+
         while(pointIndex < currentPoints.Length)
         {
             if(pointer.gameObject.activeInHierarchy && pointer.position != currentPoints[pointIndex].position)
             {
                 pointer.position = Vector3.MoveTowards(pointer.position, currentPoints[pointIndex].position, .01f);
+                lastNumber = currentPoints[pointIndex].GetComponent<Number>();
             }
             else
             {
@@ -70,9 +53,11 @@ public class RollMoves : MonoBehaviour
                 pointIndex++;
             }
 
-            yield return new WaitForSeconds(.001f);
+            yield return new WaitForSeconds(.005f);
         }
 
+        GameManager.Instance.movesToAsing = lastNumber.num.Number;
+        GameManager.Instance.asignMoves.Invoke();
         pointer.gameObject.SetActive(false);
         ouijaBoard.SetActive(false);
     }
