@@ -11,11 +11,12 @@ GameObject:
   - component: {fileID: 4350671473176662963}
   - component: {fileID: 2125161062448384279}
   - component: {fileID: 1875398524121591959}
-  - component: {fileID: -3409849453528073806}
+  - component: {fileID: 611333603027056968}
   - component: {fileID: -1267609555715734848}
   - component: {fileID: -9009507440065956730}
   - component: {fileID: 4796263876314254982}
-  m_Layer: 0
+  - component: {fileID: 1769639381241638526}
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -32,8 +33,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.47951737, y: -0.41807777, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -118,7 +119,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -134,7 +135,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!50 &-3409849453528073806
+--- !u!50 &611333603027056968
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -160,7 +161,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &-1267609555715734848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,6 +232,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MovesAmount: 0
   nextNode: {fileID: 0}
-  MyTurn: 0
-  diceRolled: 0
+--- !u!114 &1769639381241638526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5681230396980784158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dda3461fa3b67e44a012dfbf5963ebb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   Ouija: {fileID: 0}
+  MyTurn: 0
+  PersonalTurn: 0
+  diceRolled: 0
+  ID: 0

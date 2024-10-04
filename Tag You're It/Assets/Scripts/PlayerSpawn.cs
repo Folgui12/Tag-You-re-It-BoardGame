@@ -26,7 +26,11 @@ public class PlayerSpawn : MonoBehaviour
         
         int playerIndex = PhotonNetwork.PlayerList.Length;
 
-        pv.RPC("PlayerJoinned", RpcTarget.AllBuffered, pj.GetComponent<PhotonView>().ViewID, playerIndex);    
+        pj.GetComponent<PlayerManager>().ID = playerIndex;
+
+        pv.RPC("PlayerJoinned", RpcTarget.AllBuffered, pj.GetComponent<PhotonView>().ViewID, playerIndex); 
+
+        GameManager.Instance.pv.RPC("AddPlayer", RpcTarget.AllBuffered, playerIndex);
     }
 
     [PunRPC]

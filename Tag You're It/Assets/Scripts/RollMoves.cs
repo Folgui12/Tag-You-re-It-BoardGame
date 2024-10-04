@@ -44,7 +44,7 @@ public class RollMoves : MonoBehaviour
         {
             if(pointer.gameObject.activeInHierarchy && pointer.position != currentPoints[pointIndex].position)
             {
-                pointer.position = Vector3.MoveTowards(pointer.position, currentPoints[pointIndex].position, .01f);
+                pointer.position = Vector3.MoveTowards(pointer.position, currentPoints[pointIndex].position, .001f);
                 lastNumber = currentPoints[pointIndex].GetComponent<Number>();
             }
             else

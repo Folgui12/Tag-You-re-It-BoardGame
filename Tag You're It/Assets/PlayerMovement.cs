@@ -1,71 +1,63 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
     public int MovesAmount;
     public Node nextNode;
-    public bool MyTurn;
-    public bool diceRolled;
-    public GameObject Ouija;
-    private Button ouijaButton;
+    private PhotonView pv;
+
+    void Awake()
+    {
+        pv = GetComponent<PhotonView>();
+        GameManager.Instance.asignMoves.AddListener(GetDiceNumber);
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        MyTurn = true;
-        diceRolled = false;
-        Ouija = FindInactiveObjectWithTag("OUIJA");
-        GameManager.Instance.asignMoves.AddListener(GetDiceNumber);
-        ouijaButton = GameObject.FindWithTag("OuijaButton").GetComponent<Button>();
-        ouijaButton.onClick.AddListener(RollTheDice);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(MyTurn && diceRolled)
-        {
-            if(nextNode == null)
-                nextNode = GameObject.Find("Initial Node").GetComponent<Node>();
 
-            if(MovesAmount > 0)
+    }
+
+    public void StartMoving()
+    {
+        StartCoroutine("Move");
+    }
+
+    IEnumerator Move()
+    {
+        if(nextNode == null)
+            nextNode = GameObject.Find("Initial Node").GetComponent<Node>();
+
+        while(MovesAmount > 0)
+        {
+            if(MovesAmount > 0 && pv.IsMine)
             {
-                if(transform.position == nextNode.transform.position && nextNode.neightbourds.Count == 1)
+                if(transform.position == nextNode.transform.position && !nextNode.IsABifurcation)
+                {
                     nextNode = nextNode.neightbourds[0];
+                    MovesAmount--;
+                }
                 else
                 {
-                    Debug.Log("Elegí un destino");
+                    Debug.Log("Elegí un camino");
                 }
                 transform.position = Vector3.MoveTowards(transform.position, nextNode.transform.position, 0.5f * Time.deltaTime);
             }
+            yield return new WaitForSeconds(0.001f);
         }
-    }
-
-    GameObject FindInactiveObjectWithTag(string tag)
-    {
-        GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
-
-        foreach (GameObject obj in allObjects)
-        {
-            if (obj.CompareTag(tag) && !obj.activeInHierarchy)
-            {
-                return obj;
-            }
-        }
-        return null;
-    }
-
-    public void RollTheDice()
-    {
-        Ouija.SetActive(true);
     }
 
     public void GetDiceNumber()
     {
         MovesAmount = GameManager.Instance.movesToAsing;
-        diceRolled = true;
     }
 }
