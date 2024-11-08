@@ -51,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
                     nextNode = nextNode.neightbourds[0];
                     MovesAmount--;
                 }
-                else if(nextNode.IsABifurcation)
+                else if(transform.position == nextNode.transform.position && nextNode.IsABifurcation)
                 {
                     GameManager.Instance.ActiveCrossRoadButtons();
                     if(goShortCut)
@@ -73,11 +73,17 @@ public class PlayerMovement : MonoBehaviour
             }
             yield return new WaitForSeconds(0.0001f);
         }
+
+        Debug.Log("DoneMoving"); 
+
+        GameManager.Instance.ActivePassTurnButton();
+
     }
 
     public void GetDiceNumber()
     {
-        MovesAmount = GameManager.Instance.movesToAsing;
+        if(pv.IsMine)
+            MovesAmount = GameManager.Instance.movesToAsing;
         StartMoving();
     }
 

@@ -2,24 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
 {
     private GameObject ouijaButton;
-    private GameObject Ouija;
-    
     public bool MyTurn;
     public int PersonalTurn;
     public bool diceRolled;
     public int ID; 
     public PhotonView pv; 
-    int playerIndex;
 
     void Awake()
     {
         ouijaButton = FindInactiveObjectWithTag("OuijaButton");
-        Ouija = FindInactiveObjectWithTag("OUIJA");
         pv = GetComponent<PhotonView>(); 
     }
 
@@ -33,10 +28,7 @@ public class PlayerManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*if(MyTurn && pv.IsMine && !diceRolled)
-        {
-            diceRolled = true; 
-        }*/
+        pv.RPC("ActiveOuijaButton", RpcTarget.AllBuffered);
     }
 
     GameObject FindInactiveObjectWithTag(string tag)
@@ -53,9 +45,16 @@ public class PlayerManager : MonoBehaviour
         return null;
     }
 
+    [PunRPC]
     public void ActiveOuijaButton()
     {
         if(MyTurn && pv.IsMine && !diceRolled)
+        {
             ouijaButton.SetActive(true);
+        }
+        else if(MyTurn && !pv.IsMine && !diceRolled)
+        {
+            ouijaButton.SetActive(false);
+        }
     }
 }

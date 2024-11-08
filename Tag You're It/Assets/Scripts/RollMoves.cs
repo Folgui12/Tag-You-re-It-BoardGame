@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.Scripting;
+using Unity.VisualScripting;
 
 public class RollMoves : MonoBehaviourPunCallbacks
 {
     public List<Transform> childs;
     public int pointsToVisit;
     public Transform pointer;
-    public GameObject ouijaBoard;
-
     private Transform[] currentPoints;
     private int pointIndex;
-    private PhotonView photonView; 
+    private PhotonView photonView;
 
-    void Start()
+    private void OnEnable()
     {
         photonView = GetComponent<PhotonView>();
-        ResetRoll();
+        photonView.RPC("ResetRoll", RpcTarget.AllBuffered);
         photonView.RPC("StartAnimation", RpcTarget.AllBuffered);
     }
 
+    [PunRPC]
     private void ResetRoll()
     {
         pointIndex = 0;
@@ -43,7 +43,8 @@ public class RollMoves : MonoBehaviourPunCallbacks
     [PunRPC]
     private void StartAnimation()
     {
-        StartCoroutine("RollDice");
+        if(photonView.IsMine)
+            StartCoroutine("RollDice");
     }
     
     IEnumerator RollDice()
@@ -54,7 +55,7 @@ public class RollMoves : MonoBehaviourPunCallbacks
         {
             if(pointer.gameObject.activeInHierarchy && pointer.position != currentPoints[pointIndex].position)
             {
-                pointer.position = Vector3.MoveTowards(pointer.position, currentPoints[pointIndex].position, .005f);
+                pointer.position = Vector3.MoveTowards(pointer.position, currentPoints[pointIndex].position, .008f);
                 lastNumber = currentPoints[pointIndex].GetComponent<Number>();
             }
             else
@@ -63,19 +64,17 @@ public class RollMoves : MonoBehaviourPunCallbacks
                 pointIndex++;
             }
 
-            yield return new WaitForSeconds(.00001f);
+            yield return new WaitForSeconds(.000001f);
+            Debug.Log("Player Moving");
         }
 
-        GameManager.Instance.movesToAsing = lastNumber.num.Number;
-        GameManager.Instance.asignMoves.Invoke();
-        photonView.RPC("HideOuija", RpcTarget.AllBuffered);
-    }
+        if(lastNumber!=null)
+        {
+            GameManager.Instance.movesToAsing = lastNumber.num.Number;
+            GameManager.Instance.asignMoves.Invoke();
+        }
 
-    [PunRPC]
-    private void HideOuija()
-    {
-        pointer.gameObject.SetActive(false);
-        ouijaBoard.SetActive(false);
+        GameManager.Instance.DoneWithDice();
     }
 
 }

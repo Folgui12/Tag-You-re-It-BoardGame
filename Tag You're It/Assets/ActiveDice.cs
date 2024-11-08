@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class ActiveDice : MonoBehaviour
 {
-    public bool playersTurn;
+    [SerializeField] private RollMoves StartRolling;
 
     // Start is called before the first frame update
     void Start()
@@ -18,13 +18,8 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    public void PlayerCanPlay()
+    private void OnEnable()
     {
-        playersTurn = true;
-    }
-
-    public void PlayerCantPlay()
-    {
-        playersTurn = false;
+        Debug.Log("ON");
     }
 }
