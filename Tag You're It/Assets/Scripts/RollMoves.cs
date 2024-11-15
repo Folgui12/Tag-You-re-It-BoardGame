@@ -17,11 +17,9 @@ public class RollMoves : MonoBehaviourPunCallbacks
     private void OnEnable()
     {
         photonView = GetComponent<PhotonView>();
-        photonView.RPC("ResetRoll", RpcTarget.AllBuffered);
-        photonView.RPC("StartAnimation", RpcTarget.AllBuffered);
+        ResetRoll();
     }
 
-    [PunRPC]
     private void ResetRoll()
     {
         pointIndex = 0;
@@ -38,6 +36,12 @@ public class RollMoves : MonoBehaviourPunCallbacks
             if(i == currentPoints.Length-1 && currentPoints[i].GetComponent<Number>() == null)
                 i--;
         }
+
+        Number lastNumber = currentPoints[currentPoints.Length-1].GetComponent<Number>();
+
+        GameManager.Instance.movesToAsing = lastNumber.num.Number;
+
+        photonView.RPC("StartAnimation", RpcTarget.AllBuffered);
     }
 
     [PunRPC]
@@ -49,14 +53,11 @@ public class RollMoves : MonoBehaviourPunCallbacks
     
     IEnumerator RollDice()
     {
-        Number lastNumber = null;
-
         while(pointIndex < currentPoints.Length)
         {
             if(pointer.gameObject.activeInHierarchy && pointer.position != currentPoints[pointIndex].position)
             {
                 pointer.position = Vector3.MoveTowards(pointer.position, currentPoints[pointIndex].position, .008f);
-                lastNumber = currentPoints[pointIndex].GetComponent<Number>();
             }
             else
             {
@@ -65,15 +66,9 @@ public class RollMoves : MonoBehaviourPunCallbacks
             }
 
             yield return new WaitForSeconds(.000001f);
-            Debug.Log("Player Moving");
         }
 
-        if(lastNumber!=null)
-        {
-            GameManager.Instance.movesToAsing = lastNumber.num.Number;
-            GameManager.Instance.asignMoves.Invoke();
-        }
-
+        GameManager.Instance.asignMoves.Invoke();
         GameManager.Instance.DoneWithDice();
     }
 

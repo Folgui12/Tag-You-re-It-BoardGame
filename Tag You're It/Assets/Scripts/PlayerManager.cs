@@ -57,4 +57,26 @@ public class PlayerManager : MonoBehaviour
             ouijaButton.SetActive(false);
         }
     }
+
+    public void DiceRolled()
+    {
+        pv.RPC("changeDiceState", RpcTarget.AllBuffered);
+    }
+
+    [PunRPC]
+    public void changeDiceState()
+    {
+        diceRolled = true;
+    }
+
+    public void TurnToRoll()
+    {
+        pv.RPC("Roll", RpcTarget.AllBuffered);
+    }
+
+    [PunRPC]
+    public void Roll()
+    {
+        diceRolled = false;
+    }
 }

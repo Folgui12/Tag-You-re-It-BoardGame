@@ -11,10 +11,12 @@ public class PlayerMovement : MonoBehaviour
     private PhotonView pv;
     private bool goShortCut;
     private bool goSafeWay;
+    private PlayerManager pjManager;
 
     void Awake()
     {
         pv = GetComponent<PhotonView>();
+        pjManager = GetComponent<PlayerManager>();
         GameManager.Instance.asignMoves.AddListener(GetDiceNumber);
         GameManager.Instance.ShortCut.onClick.AddListener(GoShort);
         GameManager.Instance.SafeWay.onClick.AddListener(GoSafe);
@@ -34,7 +36,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void StartMoving()
     {
-        StartCoroutine("Move");
+        if(pjManager.MyTurn)
+            StartCoroutine("Move");
     }
 
     IEnumerator Move()
@@ -42,39 +45,41 @@ public class PlayerMovement : MonoBehaviour
         if(nextNode == null)
             nextNode = GameObject.Find("Initial Node").GetComponent<Node>();
 
+        Debug.Log("Player Moving");
+
         while(MovesAmount > 0)
         {
-            if(MovesAmount > 0 && pv.IsMine)
+            if(transform.position == nextNode.transform.position && !nextNode.IsABifurcation)
             {
-                if(transform.position == nextNode.transform.position && !nextNode.IsABifurcation)
+                nextNode = nextNode.neightbourds[0];
+                MovesAmount--;
+            }
+            else if(transform.position == nextNode.transform.position && nextNode.IsABifurcation)
+            {
+                GameManager.Instance.ActiveCrossRoadButtons();
+
+                if(goShortCut)
                 {
                     nextNode = nextNode.neightbourds[0];
                     MovesAmount--;
+                    goShortCut = false;
+                    GameManager.Instance.DeActiveCrossRoadButtons();
                 }
-                else if(transform.position == nextNode.transform.position && nextNode.IsABifurcation)
+
+                else if(goSafeWay)
                 {
-                    GameManager.Instance.ActiveCrossRoadButtons();
-                    if(goShortCut)
-                    {
-                        nextNode = nextNode.neightbourds[0];
-                        MovesAmount--;
-                        goShortCut = false;
-                        GameManager.Instance.DeActiveCrossRoadButtons();
-                    }
-                    else if(goSafeWay)
-                    {
-                        nextNode = nextNode.neightbourds[1];
-                        MovesAmount--;
-                        goSafeWay = false;
-                        GameManager.Instance.DeActiveCrossRoadButtons();
-                    }
+                    nextNode = nextNode.neightbourds[1];
+                    MovesAmount--;
+                    goSafeWay = false;
+                    GameManager.Instance.DeActiveCrossRoadButtons();
                 }
-                transform.position = Vector3.MoveTowards(transform.position, nextNode.transform.position, 1f * Time.deltaTime);
             }
+            
+            transform.position = Vector3.MoveTowards(transform.position, nextNode.transform.position, 1f * Time.deltaTime);
             yield return new WaitForSeconds(0.0001f);
         }
 
-        Debug.Log("DoneMoving"); 
+        Debug.Log("DoneMoving");
 
         GameManager.Instance.ActivePassTurnButton();
 
@@ -82,16 +87,19 @@ public class PlayerMovement : MonoBehaviour
 
     public void GetDiceNumber()
     {
-        if(pv.IsMine)
+        if(pjManager.MyTurn)
             MovesAmount = GameManager.Instance.movesToAsing;
+
         StartMoving();
     }
 
     private void GoShort(){
-        goShortCut = true;
+        if(pv.IsMine)
+            goShortCut = true;
     }
 
     private void GoSafe(){
-        goSafeWay = true;
+        if(pv.IsMine)
+            goSafeWay = true;
     }
 }

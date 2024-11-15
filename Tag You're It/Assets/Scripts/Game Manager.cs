@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviour
                 //PJ3.MyTurn = false;
                 //PJ4.MyTurn = false;
                 Debug.Log("Player 1 Turn");
+                PJ1.TurnToRoll();
                 break;
 
             case 2:
@@ -89,6 +90,7 @@ public class GameManager : MonoBehaviour
                 //PJ3.MyTurn = false;
                 //PJ4.MyTurn = false;
                 Debug.Log("Player 2 Turn");
+                PJ2.TurnToRoll();
                 break;
 
             case 3:
@@ -112,7 +114,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    [PunRPC]
     public void NextTurn()
     {
         turnIndex++; 
@@ -177,7 +178,7 @@ public class GameManager : MonoBehaviour
 
     private void NextPlayerTurn()
     {
-        pv.RPC("NextTurn", RpcTarget.AllBuffered);
+        NextTurn();
         Go();
         DeactivePassTurnButton();
     }
