@@ -34,29 +34,32 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    public void StartMoving()
-    {
-        if(pjManager.MyTurn)
-            StartCoroutine("Move");
-    }
-
     IEnumerator Move()
     {
         if(nextNode == null)
             nextNode = GameObject.Find("Initial Node").GetComponent<Node>();
 
-        Debug.Log("Player Moving");
-
-        while(MovesAmount > 0)
+        while(MovesAmount > 0 && pjManager.MyTurn)
         {
             if(transform.position == nextNode.transform.position && !nextNode.IsABifurcation)
             {
                 nextNode = nextNode.neightbourds[0];
+
+                if(MovesAmount == 1)
+                {
+                    if(nextNode.HasKey)
+                        pjManager.NewKey();
+
+                    if(nextNode.IsScare)
+                        nextNode.ChanceToScare();
+                }
+                     
                 MovesAmount--;
             }
             else if(transform.position == nextNode.transform.position && nextNode.IsABifurcation)
             {
-                GameManager.Instance.ActiveCrossRoadButtons();
+                if(pjManager.MyTurn)
+                    GameManager.Instance.ActiveCrossRoadButtons();
 
                 if(goShortCut)
                 {
@@ -79,27 +82,29 @@ public class PlayerMovement : MonoBehaviour
             yield return new WaitForSeconds(0.0001f);
         }
 
-        Debug.Log("DoneMoving");
-
         GameManager.Instance.ActivePassTurnButton();
 
     }
 
     public void GetDiceNumber()
     {
-        if(pjManager.MyTurn)
+        Debug.Log(pv.IsMine);
+        if(pv.IsMine)
+        {
+            Debug.Log("Move");
             MovesAmount = GameManager.Instance.movesToAsing;
-
-        StartMoving();
+            StartCoroutine("Move");
+        }
+            
     }
 
     private void GoShort(){
-        if(pv.IsMine)
+        if(pjManager.MyTurn)
             goShortCut = true;
     }
 
     private void GoSafe(){
-        if(pv.IsMine)
+        if(pjManager.MyTurn)
             goSafeWay = true;
     }
 }

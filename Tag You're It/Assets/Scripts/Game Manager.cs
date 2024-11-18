@@ -1,9 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using Photon.Pun;
-using System.Collections.Generic;
 using UnityEngine.UI;
-using Photon.Realtime;
 
 public class GameManager : MonoBehaviour
 {
@@ -104,7 +102,7 @@ public class GameManager : MonoBehaviour
             case 4:
                 PJ1.MyTurn = false;
                 PJ2.MyTurn = false;
-                // PJ3.MyTurn = false;
+                PJ3.MyTurn = false;
                 // PJ4.MyTurn = true;
                 Debug.Log("Player 4 Turn");
                 break;
@@ -118,7 +116,7 @@ public class GameManager : MonoBehaviour
     {
         turnIndex++; 
 
-        if(turnIndex == 5)
+        if(turnIndex == 3)
         {
             turnIndex = 0;
         }
@@ -133,18 +131,26 @@ public class GameManager : MonoBehaviour
         {
             case 1:
                 PJ1 = pjView.gameObject.GetComponent<PlayerManager>();
+                PJ1.ID = pjIndex;
+                PJ1.Keys = GameObject.Find("P1").GetComponentsInChildren<Image>();
                 break;
 
             case 2:
                 PJ2 = pjView.gameObject.GetComponent<PlayerManager>();
+                PJ2.ID = pjIndex;
+                PJ2.Keys = GameObject.Find("P2").GetComponentsInChildren<Image>();
                 break;
 
             case 3:
-                //PJ3 = pjView.gameObject.GetComponent<PlayerManager>();
+                PJ3 = pjView.gameObject.GetComponent<PlayerManager>();
+                PJ3.ID = pjIndex;
+                PJ3.Keys = GameObject.Find("P3").GetComponentsInChildren<Image>();
                 break;
 
             case 4:
-                // PJ4 = pjView.gameObject.GetComponent<PlayerManager>();
+                //PJ4 = pjView.gameObject.GetComponent<PlayerManager>();
+                //PJ4.ID = pjIndex;
+                //PJ4.Keys = GameObject.Find("P4").GetComponentsInChildren<Image>();
                 break;
             
             default:

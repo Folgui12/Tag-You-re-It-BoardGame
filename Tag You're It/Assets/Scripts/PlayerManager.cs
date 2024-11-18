@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -11,9 +12,13 @@ public class PlayerManager : MonoBehaviour
     public bool diceRolled;
     public int ID; 
     public PhotonView pv; 
+    public Image[] Keys = new Image[4];
+
+    private int keysIndex;
 
     void Awake()
     {
+        keysIndex = 0;
         ouijaButton = FindInactiveObjectWithTag("OuijaButton");
         pv = GetComponent<PhotonView>(); 
     }
@@ -28,7 +33,7 @@ public class PlayerManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        pv.RPC("ActiveOuijaButton", RpcTarget.AllBuffered);
+        
     }
 
     GameObject FindInactiveObjectWithTag(string tag)
@@ -71,12 +76,27 @@ public class PlayerManager : MonoBehaviour
 
     public void TurnToRoll()
     {
-        pv.RPC("Roll", RpcTarget.AllBuffered);
+        diceRolled = false;
+        //pv.RPC("Roll", RpcTarget.AllBuffered);
+        pv.RPC("ActiveOuijaButton", RpcTarget.AllBuffered);
     }
 
-    [PunRPC]
+    /*[PunRPC]
     public void Roll()
     {
         diceRolled = false;
+    }*/
+    
+    public void NewKey()
+    {
+        pv.RPC("ShowKey", RpcTarget.AllBuffered);
+
+        keysIndex++;
+    }
+
+    [PunRPC]
+    private void ShowKey()
+    {
+        Keys[keysIndex].color = new Color(1, 1, 1);
     }
 }

@@ -47,8 +47,7 @@ public class RollMoves : MonoBehaviourPunCallbacks
     [PunRPC]
     private void StartAnimation()
     {
-        if(photonView.IsMine)
-            StartCoroutine("RollDice");
+        StartCoroutine("RollDice");
     }
     
     IEnumerator RollDice()
