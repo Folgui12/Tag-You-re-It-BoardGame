@@ -116,6 +116,8 @@ public class GameManager : MonoBehaviour
     {
         turnIndex++; 
 
+        Debug.Log(turnIndex);
+
         if(turnIndex == 3)
         {
             turnIndex = 0;
@@ -156,6 +158,11 @@ public class GameManager : MonoBehaviour
             default:
                 break; 
         }
+    }
+
+    public void NumberOfMovements(int moves)
+    {
+        movesToAsing = moves;
     }
 
     public void RollDice()

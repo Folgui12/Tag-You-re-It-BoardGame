@@ -30,12 +30,6 @@ public class PlayerManager : MonoBehaviour
         diceRolled = false;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     GameObject FindInactiveObjectWithTag(string tag)
     {
         GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
@@ -77,15 +71,8 @@ public class PlayerManager : MonoBehaviour
     public void TurnToRoll()
     {
         diceRolled = false;
-        //pv.RPC("Roll", RpcTarget.AllBuffered);
         pv.RPC("ActiveOuijaButton", RpcTarget.AllBuffered);
     }
-
-    /*[PunRPC]
-    public void Roll()
-    {
-        diceRolled = false;
-    }*/
     
     public void NewKey()
     {

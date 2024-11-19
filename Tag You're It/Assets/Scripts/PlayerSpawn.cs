@@ -27,6 +27,9 @@ public class PlayerSpawn : MonoBehaviour
         int playerIndex = PhotonNetwork.PlayerList.Length;
 
         PlayerManager pjManager = pj.GetComponent<PlayerManager>();
+        PlayerMovement pjMov = pj.GetComponent<PlayerMovement>();
+
+        pjMov.nextNode = GameObject.Find("Initial Node").GetComponent<Node>();
 
         pjManager.ID = playerIndex;
 

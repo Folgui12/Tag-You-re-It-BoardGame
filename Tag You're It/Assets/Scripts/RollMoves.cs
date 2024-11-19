@@ -39,13 +39,13 @@ public class RollMoves : MonoBehaviourPunCallbacks
 
         Number lastNumber = currentPoints[currentPoints.Length-1].GetComponent<Number>();
 
-        GameManager.Instance.movesToAsing = lastNumber.num.Number;
+        GameManager.Instance.NumberOfMovements(lastNumber.num.Number);
 
-        photonView.RPC("StartAnimation", RpcTarget.AllBuffered);
+        photonView.RPC("Roll", RpcTarget.AllBuffered);
     }
 
     [PunRPC]
-    private void StartAnimation()
+    private void Roll()
     {
         StartCoroutine("RollDice");
     }
@@ -56,7 +56,7 @@ public class RollMoves : MonoBehaviourPunCallbacks
         {
             if(pointer.gameObject.activeInHierarchy && pointer.position != currentPoints[pointIndex].position)
             {
-                pointer.position = Vector3.MoveTowards(pointer.position, currentPoints[pointIndex].position, .008f);
+                pointer.position = Vector3.MoveTowards(pointer.position, currentPoints[pointIndex].position, .08f);
             }
             else
             {
@@ -64,11 +64,10 @@ public class RollMoves : MonoBehaviourPunCallbacks
                 pointIndex++;
             }
 
-            yield return new WaitForSeconds(.000001f);
+            yield return new WaitForSeconds(.00000001f);
         }
 
         GameManager.Instance.asignMoves.Invoke();
         GameManager.Instance.DoneWithDice();
     }
-
 }

@@ -52,6 +52,9 @@ MonoBehaviour:
   - changeDiceState
   - Roll
   - ShowKey
+  - AssingNumber
+  - NumberOfMovements
+  - GetDiceNumber
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

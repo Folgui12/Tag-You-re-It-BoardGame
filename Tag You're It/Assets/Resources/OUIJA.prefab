@@ -1101,7 +1101,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4693998114031126319}
   - component: {fileID: 1787032979561544851}
-  - component: {fileID: 4510652250960474641}
+  - component: {fileID: 4327429089062060094}
   - component: {fileID: 2119519273282806870}
   m_Layer: 0
   m_Name: RandomPoints
@@ -1159,8 +1159,7 @@ MonoBehaviour:
   childs: []
   pointsToVisit: 5
   pointer: {fileID: 8353069180518258754}
-  ouijaBoard: {fileID: 633639817038913314}
---- !u!114 &4510652250960474641
+--- !u!114 &4327429089062060094
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
