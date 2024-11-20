@@ -2,24 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.Scripting;
-using Unity.VisualScripting;
 
 public class RollMoves : MonoBehaviourPunCallbacks
 {
-    public List<Transform> childs;
+    /*public List<Transform> childs;
     public int pointsToVisit;
     public Transform pointer;
     private Transform[] currentPoints;
     private int pointIndex;
-    private PhotonView photonView;
+    private PhotonView pv;
 
     private void OnEnable()
     {
-        photonView = GetComponent<PhotonView>();
-        ResetRoll();
+        pv = GetComponent<PhotonView>();
+
+        pv.RPC("ResetRoll", RpcTarget.AllBuffered);
     }
 
+    [PunRPC]
     private void ResetRoll()
     {
         pointIndex = 0;
@@ -69,5 +69,5 @@ public class RollMoves : MonoBehaviourPunCallbacks
 
         GameManager.Instance.asignMoves.Invoke();
         GameManager.Instance.DoneWithDice();
-    }
+    }*/
 }

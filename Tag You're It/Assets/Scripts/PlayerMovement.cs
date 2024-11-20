@@ -25,10 +25,8 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator Move()
     {
-        Debug.Log(MovesAmount);
         while(MovesAmount > 0 && pjManager.MyTurn && !OnABifurcation)
         {
-            Debug.Log("Moving");
             if(transform.position == nextNode.transform.position && !nextNode.IsABifurcation)
             {
                 if(MovesAmount == 1)
@@ -50,6 +48,8 @@ public class PlayerMovement : MonoBehaviour
 
                 if(pjManager.MyTurn && pv.IsMine)
                     GameManager.Instance.ActiveCrossRoadButtons();
+                
+                MovesAmount--;
             }
             
             transform.position = Vector3.MoveTowards(transform.position, nextNode.transform.position, 1f * Time.deltaTime);
@@ -62,18 +62,16 @@ public class PlayerMovement : MonoBehaviour
 
     private void GetNumber()
     {
-        pv.RPC("GetDiceNumber", RpcTarget.AllBuffered);
-        StartCoroutine("Move");
+        if(pjManager.MyTurn)
+            MovesAmount = GameManager.Instance.movesToAsing;
+        
+        pv.RPC("MovePlayer", RpcTarget.All);
     }
 
     [PunRPC]
-    public void GetDiceNumber()
+    public void MovePlayer()
     {
-        if(pjManager.MyTurn && pv.IsMine)
-        {
-            MovesAmount = GameManager.Instance.movesToAsing;
-        }
-            
+        StartCoroutine("Move");
     }
 
     private void GoShort()
@@ -86,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
 
         GameManager.Instance.DeActiveCrossRoadButtons();
 
-        StartCoroutine("Move");
+        pv.RPC("MovePlayer", RpcTarget.All);
             
     }
 
@@ -100,7 +98,7 @@ public class PlayerMovement : MonoBehaviour
 
         GameManager.Instance.DeActiveCrossRoadButtons();
 
-        StartCoroutine("Move");
+        pv.RPC("MovePlayer", RpcTarget.All);
             
     }
 }

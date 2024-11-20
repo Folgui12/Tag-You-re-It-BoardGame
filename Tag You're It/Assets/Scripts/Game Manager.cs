@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        EndTurnButton.onClick.AddListener(NextPlayerTurn);
+        EndTurnButton.onClick.AddListener(NextTurn);
     }
 
     // Update is called once per frame
@@ -116,12 +116,13 @@ public class GameManager : MonoBehaviour
     {
         turnIndex++; 
 
-        Debug.Log(turnIndex);
-
-        if(turnIndex == 3)
+        if(turnIndex == PhotonNetwork.CurrentRoom.PlayerCount)
         {
-            turnIndex = 0;
+            turnIndex = 1;
         }
+
+        Go();
+        DeactivePassTurnButton();
     }
 
     [PunRPC]
@@ -160,17 +161,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void NumberOfMovements(int moves)
+    /*public void NumberOfMovements(int moves)
     {
         movesToAsing = moves;
-    }
+    }*/
 
     public void RollDice()
     {
-        pv.RPC("ShowOuija", RpcTarget.AllBuffered);
+        movesToAsing = Random.Range(1, 7);
+
+        Debug.Log(movesToAsing);
+
+        asignMoves.Invoke();
     }
 
-    [PunRPC]
+    /*[PunRPC]
     private void ShowOuija()
     {
         OuijaBoard.SetActive(true);
@@ -187,12 +192,5 @@ public class GameManager : MonoBehaviour
     {
         OuijaBoard.SetActive(false);
         OuijaPoints.SetActive(false);
-    }
-
-    private void NextPlayerTurn()
-    {
-        NextTurn();
-        Go();
-        DeactivePassTurnButton();
-    }
+    }*/
 }
