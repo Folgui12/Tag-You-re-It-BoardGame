@@ -8,8 +8,10 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject StartGame;
     [SerializeField] private Button EndTurnButton;
+
     //[SerializeField] private GameObject OuijaBoard;
     //[SerializeField] private GameObject OuijaPoints;
+
     [SerializeField] private List<AudioClip> Nums = new();
     [SerializeField] private AudioSource DiceNumberSpeaker;
 
@@ -19,13 +21,15 @@ public class GameManager : MonoBehaviour
     public int movesToAsing;
     public UnityEvent asignMoves;
     public int TurnCounter;
-    public PhotonView pv; 
+    public PhotonView pv;
+    public int turnIndex = 1;
 
     private PlayerManager PJ1;
     private PlayerManager PJ2;
     private PlayerManager PJ3;
     private PlayerManager PJ4;
-    public int turnIndex = 1;
+    private bool GameStarted;
+
 
     void Awake()
     {
@@ -41,12 +45,13 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         EndTurnButton.onClick.AddListener(NextTurn);
+        GameStarted = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(PhotonNetwork.CurrentRoom.PlayerCount >= 2 && PhotonNetwork.IsMasterClient)
+        if(PhotonNetwork.CurrentRoom.PlayerCount >= 2 && PhotonNetwork.IsMasterClient && !GameStarted)
         {
             StartGame.SetActive(true);
         }
@@ -78,29 +83,66 @@ public class GameManager : MonoBehaviour
         switch (index)
         {
             case 1:
-                PJ1.MyTurn = true;
-                PJ2.MyTurn = false;
-                PJ3.MyTurn = false;
-                PJ4.MyTurn = false;
-                Debug.Log("Player 1 Turn");
+                if(PhotonNetwork.PlayerList.Length == 2)
+                {
+                    PJ1.MyTurn = true;
+                    PJ2.MyTurn = false;
+                }
+                if(PhotonNetwork.PlayerList.Length == 3)
+                {
+                    PJ1.MyTurn = true;
+                    PJ2.MyTurn = false;
+                    PJ3.MyTurn = false;
+                }
+                if(PhotonNetwork.PlayerList.Length == 4)
+                {
+                    PJ1.MyTurn = true;
+                    PJ2.MyTurn = false;
+                    PJ3.MyTurn = false;
+                    PJ4.MyTurn = false;
+                }
+                //Debug.Log("Player 1 Turn");
                 PJ1.TurnToRoll();
                 break;
 
             case 2:
-                PJ1.MyTurn = false;
-                PJ2.MyTurn = true;
-                PJ3.MyTurn = false;
-                PJ4.MyTurn = false;
-                Debug.Log("Player 2 Turn");
+                if(PhotonNetwork.PlayerList.Length == 2)
+                {
+                    PJ1.MyTurn = false;
+                    PJ2.MyTurn = true;
+                }
+                if(PhotonNetwork.PlayerList.Length == 3)
+                {
+                    PJ1.MyTurn = false;
+                    PJ2.MyTurn = true;
+                    PJ3.MyTurn = false;
+                }
+                if(PhotonNetwork.PlayerList.Length == 4)
+                {
+                    PJ1.MyTurn = false;
+                    PJ2.MyTurn = true;
+                    PJ3.MyTurn = false;
+                    PJ4.MyTurn = false;
+                }
+                //Debug.Log("Player 2 Turn");
                 PJ2.TurnToRoll();
                 break;
 
             case 3:
-                PJ1.MyTurn = false;
-                PJ2.MyTurn = false;
-                PJ3.MyTurn = true;
-                PJ4.MyTurn = false;
-                Debug.Log("Player 3 Turn");
+                if(PhotonNetwork.PlayerList.Length == 3)
+                {
+                    PJ1.MyTurn = false;
+                    PJ2.MyTurn = false;
+                    PJ3.MyTurn = true;
+                }
+                if(PhotonNetwork.PlayerList.Length == 4)
+                {
+                    PJ1.MyTurn = false;
+                    PJ2.MyTurn = false;
+                    PJ3.MyTurn = true;
+                    PJ4.MyTurn = false;
+                }
+                //Debug.Log("Player 3 Turn");
                 break;
 
             case 4:
@@ -108,7 +150,7 @@ public class GameManager : MonoBehaviour
                 PJ2.MyTurn = false;
                 PJ3.MyTurn = false;
                 PJ4.MyTurn = true;
-                Debug.Log("Player 4 Turn");
+                //Debug.Log("Player 4 Turn");
                 break;
             
             default:
@@ -184,7 +226,7 @@ public class GameManager : MonoBehaviour
     {
         movesToAsing = Random.Range(1, 7);
 
-        Debug.Log(movesToAsing);
+        //Debug.Log(movesToAsing);
 
         pv.RPC("CallDice", RpcTarget.All, movesToAsing);
 
@@ -223,6 +265,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    [PunRPC]
+    private void CallDice(int diceNumber)
+    {
+        DiceNumberSpeaker.clip = Nums[diceNumber-1];
+        DiceNumberSpeaker.Play();
+    }
+
+    public void GameBegin()
+    {
+        GameStarted = true;
+    }
+
     /*[PunRPC]
     private void ShowOuija()
     {
@@ -242,10 +296,5 @@ public class GameManager : MonoBehaviour
         OuijaPoints.SetActive(false);
     }*/
 
-    [PunRPC]
-    private void CallDice(int diceNumber)
-    {
-        DiceNumberSpeaker.clip = Nums[diceNumber-1];
-        DiceNumberSpeaker.Play();
-    }
+    
 }

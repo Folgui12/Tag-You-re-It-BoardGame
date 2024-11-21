@@ -35,6 +35,8 @@ public class Node : MonoBehaviour
 
     IEnumerator ShowJumpScare()
     {
+        Debug.Log("SCARED");
+
         JumpScare.SetActive(true);
 
         yield return new WaitForSeconds(1f);
