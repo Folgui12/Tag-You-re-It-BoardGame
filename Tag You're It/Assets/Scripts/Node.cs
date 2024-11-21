@@ -17,21 +17,27 @@ public class Node : MonoBehaviour
 
     public bool IsSafeSpot;
 
+    public bool NoRoadAhead;
+
     public void ChanceToScare()
     {
-        Debug.Log("Tried To Scare");
-        if(Random.Range(0, 10) == 7)
+        /*Debug.Log("Tried To Scare");
+
+        int ran = Random.Range(0, 5);
+
+        if(ran == 2 || ran == 4)
         {
-            StartCoroutine("ShowJumpScare");
-        }
+            
+        }*/
+
+        StartCoroutine("ShowJumpScare");
     }
 
     IEnumerator ShowJumpScare()
     {
         JumpScare.SetActive(true);
-        //Activar el sonido
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
 
         JumpScare.SetActive(false);
     }

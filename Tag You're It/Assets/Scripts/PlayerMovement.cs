@@ -1,16 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using Photon.Pun;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private AudioSource steps;
     public int MovesAmount;
     public Node nextNode;
     private PhotonView pv;
     private PlayerManager pjManager;
-    private bool OnABifurcation;
 
     void Awake()
     {
@@ -19,53 +20,99 @@ public class PlayerMovement : MonoBehaviour
         GameManager.Instance.asignMoves.AddListener(GetNumber);
         GameManager.Instance.ShortCut.onClick.AddListener(GoShort);
         GameManager.Instance.SafeWay.onClick.AddListener(GoSafe);
-
-        OnABifurcation = false;
     }
 
     IEnumerator Move()
     {
-        while(MovesAmount > 0 && pjManager.MyTurn && !OnABifurcation)
+        while(MovesAmount > 0 && pjManager.MyTurn)
         {
-            if(transform.position == nextNode.transform.position && !nextNode.IsABifurcation)
+            if(!steps.isPlaying && pv.IsMine)
+                steps.Play();
+
+            if(transform.position == nextNode.transform.position)
             {
-                if(MovesAmount == 1)
+                if(!nextNode.IsABifurcation)
                 {
-                    if(nextNode.HasKey)
-                        pjManager.NewKey();
+                    if(MovesAmount == 1)
+                    {
+                        if(nextNode.HasKey)
+                            pjManager.NewKey();
 
-                    if(nextNode.IsScare)
-                        nextNode.ChanceToScare();
+                        if(nextNode.IsScare)
+                            nextNode.ChanceToScare();
+                    }
+
+                    if(nextNode.name != "BeforeNoRoadAhead")
+                    {
+                        if(nextNode.name == "FinalNode")
+                        {
+                            GameManager.Instance.CheckWinner();
+                        }
+
+                        nextNode = nextNode.neightbourds[0];
+                    }
+                        
+                    else
+                    {
+                        if(!nextNode.NoRoadAhead)
+                        {
+                            nextNode = nextNode.neightbourds[0];
+                        }
+
+                        if(nextNode.NoRoadAhead)
+                        {
+                            nextNode = nextNode.neightbourds[1];
+                            nextNode.NoRoadAhead = false;
+                            continue;
+                        }
+
+                        nextNode.NoRoadAhead = true;
+                    }
+                    
+                    MovesAmount--;
                 }
-        
-                nextNode = nextNode.neightbourds[0];
-                MovesAmount--;
+
+                else if(nextNode.IsABifurcation)
+                {
+                    if(pjManager.MyTurn && pv.IsMine)
+                        GameManager.Instance.ActiveCrossRoadButtons();
+                    
+                    MovesAmount--;
+
+                    break;
+                }
+
             }
 
-            else if(transform.position == nextNode.transform.position && nextNode.IsABifurcation)
-            {
-                OnABifurcation = true;
-
-                if(pjManager.MyTurn && pv.IsMine)
-                    GameManager.Instance.ActiveCrossRoadButtons();
-                
-                MovesAmount--;
-            }
-            
             transform.position = Vector3.MoveTowards(transform.position, nextNode.transform.position, 1f * Time.deltaTime);
             yield return new WaitForSeconds(0.0001f);
         }
 
-        if(MovesAmount == 0)
+        if(MovesAmount == 0 && pjManager.MyTurn && pv.IsMine)
+        {
+            pv.RPC("SetDiceText", RpcTarget.All, 0);
+            pjManager.DiceText.text = " ";
             GameManager.Instance.ActivePassTurnButton();
+        }
+            
     }
 
     private void GetNumber()
     {
         if(pjManager.MyTurn)
+        {
             MovesAmount = GameManager.Instance.movesToAsing;
-        
+            pv.RPC("SetDiceText", RpcTarget.All, MovesAmount);
+        }
+            
         pv.RPC("MovePlayer", RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void SetDiceText(int number)
+    {
+        Debug.Log(pjManager.DiceText);
+        pjManager.DiceText.text = number.ToString();
     }
 
     [PunRPC]
@@ -79,7 +126,6 @@ public class PlayerMovement : MonoBehaviour
         if(pjManager.MyTurn)
         {
             nextNode = nextNode.neightbourds[0];
-            OnABifurcation = false;
         }
 
         GameManager.Instance.DeActiveCrossRoadButtons();
@@ -92,7 +138,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if(pjManager.MyTurn)
         {
-            OnABifurcation = false;
             nextNode = nextNode.neightbourds[1];
         }
 

@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
+using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : MonoBehaviourPunCallbacks
 {
     private GameObject ouijaButton;
     public bool MyTurn;
@@ -13,14 +13,22 @@ public class PlayerManager : MonoBehaviour
     public int ID; 
     public PhotonView pv; 
     public Image[] Keys = new Image[4];
+    public Text DiceText;
 
     private int keysIndex;
+
+    private GameObject PauseMenu;
+    private bool PauseActive;
+    private Button LeaveRoomButton;
 
     void Awake()
     {
         keysIndex = 0;
         ouijaButton = FindInactiveObjectWithTag("OuijaButton");
         pv = GetComponent<PhotonView>(); 
+        PauseMenu = FindInactiveObjectWithTag("Pause");
+        PauseActive = false;
+        LeaveRoomButton = FindInactiveObjectWithTag("Leaver").GetComponent<Button>();
     }
 
     // Start is called before the first frame update
@@ -29,6 +37,17 @@ public class PlayerManager : MonoBehaviour
         MyTurn = false;
         diceRolled = false;
     }
+
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            PauseActive = !PauseActive;
+
+            PauseMenu.SetActive(PauseActive);
+        }
+            
+    }  
 
     GameObject FindInactiveObjectWithTag(string tag)
     {
@@ -79,6 +98,9 @@ public class PlayerManager : MonoBehaviour
         pv.RPC("ShowKey", RpcTarget.AllBuffered);
 
         keysIndex++;
+
+        if(keysIndex > 4)
+            keysIndex = 4;
     }
 
     [PunRPC]
@@ -86,4 +108,10 @@ public class PlayerManager : MonoBehaviour
     {
         Keys[keysIndex].color = new Color(1, 1, 1);
     }
+
+    public bool CheckWin()
+    {
+        return keysIndex == 4 && MyTurn;
+    }
 }
+

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Photon.Pun;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -70,7 +71,6 @@ public class GameManager : MonoBehaviour
     [PunRPC]
     private void currentTurn(int index)
     {
-        Debug.Log("Asing Turns");
         switch (index)
         {
             case 1:
@@ -112,11 +112,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void NextTurn()
+    private void NextTurn()
+    {
+        pv.RPC("NextPlayerTurn", RpcTarget.All);
+    }  
+
+    [PunRPC]
+    public void NextPlayerTurn()
     {
         turnIndex++; 
 
-        if(turnIndex == PhotonNetwork.CurrentRoom.PlayerCount)
+        Debug.Log(PhotonNetwork.CurrentRoom.PlayerCount);
+
+        if(turnIndex > PhotonNetwork.CurrentRoom.PlayerCount)
         {
             turnIndex = 1;
         }
@@ -136,24 +144,28 @@ public class GameManager : MonoBehaviour
                 PJ1 = pjView.gameObject.GetComponent<PlayerManager>();
                 PJ1.ID = pjIndex;
                 PJ1.Keys = GameObject.Find("P1").GetComponentsInChildren<Image>();
+                PJ1.DiceText = GameObject.Find("DiceNumberP1").GetComponent<Text>();
                 break;
 
             case 2:
                 PJ2 = pjView.gameObject.GetComponent<PlayerManager>();
                 PJ2.ID = pjIndex;
                 PJ2.Keys = GameObject.Find("P2").GetComponentsInChildren<Image>();
+                PJ2.DiceText = GameObject.Find("DiceNumberP2").GetComponent<Text>();
                 break;
 
             case 3:
                 PJ3 = pjView.gameObject.GetComponent<PlayerManager>();
                 PJ3.ID = pjIndex;
                 PJ3.Keys = GameObject.Find("P3").GetComponentsInChildren<Image>();
+                PJ3.DiceText = GameObject.Find("DiceNumberP3").GetComponent<Text>();
                 break;
 
             case 4:
-                //PJ4 = pjView.gameObject.GetComponent<PlayerManager>();
-                //PJ4.ID = pjIndex;
-                //PJ4.Keys = GameObject.Find("P4").GetComponentsInChildren<Image>();
+                PJ4 = pjView.gameObject.GetComponent<PlayerManager>();
+                PJ4.ID = pjIndex;
+                PJ4.Keys = GameObject.Find("P4").GetComponentsInChildren<Image>();
+                PJ4.DiceText = GameObject.Find("DiceNumberP4").GetComponent<Text>();
                 break;
             
             default:
@@ -173,6 +185,38 @@ public class GameManager : MonoBehaviour
         Debug.Log(movesToAsing);
 
         asignMoves.Invoke();
+    }
+
+    public void CheckWinner()
+    {
+        if(PJ1.CheckWin())
+        {
+            if(pv.IsMine)
+                SceneLoader.Instance.YouWin();
+            else
+                SceneLoader.Instance.YouLose();
+        }
+        else if(PJ2.CheckWin())
+        {
+            if(pv.IsMine)
+                SceneLoader.Instance.YouWin();
+            else
+                SceneLoader.Instance.YouLose();
+        }
+        else if(PJ3.CheckWin())
+        {
+            if(pv.IsMine)
+                SceneLoader.Instance.YouWin();
+            else
+                SceneLoader.Instance.YouLose();
+        }
+        else if(PJ4.CheckWin())
+        {
+            if(pv.IsMine)
+                SceneLoader.Instance.YouWin();
+            else
+                SceneLoader.Instance.YouLose();
+        }
     }
 
     /*[PunRPC]
