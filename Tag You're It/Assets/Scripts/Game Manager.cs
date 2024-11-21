@@ -2,14 +2,17 @@ using UnityEngine;
 using UnityEngine.Events;
 using Photon.Pun;
 using UnityEngine.UI;
-using TMPro;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject StartGame;
     [SerializeField] private Button EndTurnButton;
-    [SerializeField] private GameObject OuijaBoard;
-    [SerializeField] private GameObject OuijaPoints;
+    //[SerializeField] private GameObject OuijaBoard;
+    //[SerializeField] private GameObject OuijaPoints;
+    [SerializeField] private List<AudioClip> Nums = new();
+    [SerializeField] private AudioSource DiceNumberSpeaker;
+
     public static GameManager Instance;
     public Button ShortCut;
     public Button SafeWay;
@@ -17,6 +20,7 @@ public class GameManager : MonoBehaviour
     public UnityEvent asignMoves;
     public int TurnCounter;
     public PhotonView pv; 
+
     private PlayerManager PJ1;
     private PlayerManager PJ2;
     private PlayerManager PJ3;
@@ -76,8 +80,8 @@ public class GameManager : MonoBehaviour
             case 1:
                 PJ1.MyTurn = true;
                 PJ2.MyTurn = false;
-                //PJ3.MyTurn = false;
-                //PJ4.MyTurn = false;
+                PJ3.MyTurn = false;
+                PJ4.MyTurn = false;
                 Debug.Log("Player 1 Turn");
                 PJ1.TurnToRoll();
                 break;
@@ -85,8 +89,8 @@ public class GameManager : MonoBehaviour
             case 2:
                 PJ1.MyTurn = false;
                 PJ2.MyTurn = true;
-                //PJ3.MyTurn = false;
-                //PJ4.MyTurn = false;
+                PJ3.MyTurn = false;
+                PJ4.MyTurn = false;
                 Debug.Log("Player 2 Turn");
                 PJ2.TurnToRoll();
                 break;
@@ -94,8 +98,8 @@ public class GameManager : MonoBehaviour
             case 3:
                 PJ1.MyTurn = false;
                 PJ2.MyTurn = false;
-                //PJ3.MyTurn = true;
-                //PJ4.MyTurn = false;
+                PJ3.MyTurn = true;
+                PJ4.MyTurn = false;
                 Debug.Log("Player 3 Turn");
                 break;
 
@@ -103,7 +107,7 @@ public class GameManager : MonoBehaviour
                 PJ1.MyTurn = false;
                 PJ2.MyTurn = false;
                 PJ3.MyTurn = false;
-                // PJ4.MyTurn = true;
+                PJ4.MyTurn = true;
                 Debug.Log("Player 4 Turn");
                 break;
             
@@ -121,8 +125,6 @@ public class GameManager : MonoBehaviour
     public void NextPlayerTurn()
     {
         turnIndex++; 
-
-        Debug.Log(PhotonNetwork.CurrentRoom.PlayerCount);
 
         if(turnIndex > PhotonNetwork.CurrentRoom.PlayerCount)
         {
@@ -184,6 +186,8 @@ public class GameManager : MonoBehaviour
 
         Debug.Log(movesToAsing);
 
+        pv.RPC("CallDice", RpcTarget.All, movesToAsing);
+
         asignMoves.Invoke();
     }
 
@@ -237,4 +241,11 @@ public class GameManager : MonoBehaviour
         OuijaBoard.SetActive(false);
         OuijaPoints.SetActive(false);
     }*/
+
+    [PunRPC]
+    private void CallDice(int diceNumber)
+    {
+        DiceNumberSpeaker.clip = Nums[diceNumber-1];
+        DiceNumberSpeaker.Play();
+    }
 }

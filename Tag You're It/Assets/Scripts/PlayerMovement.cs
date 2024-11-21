@@ -88,6 +88,8 @@ public class PlayerMovement : MonoBehaviour
             yield return new WaitForSeconds(0.0001f);
         }
 
+        steps.Stop();
+
         if(MovesAmount == 0 && pjManager.MyTurn && pv.IsMine)
         {
             pv.RPC("SetDiceText", RpcTarget.All, 0);
@@ -111,7 +113,6 @@ public class PlayerMovement : MonoBehaviour
     [PunRPC]
     private void SetDiceText(int number)
     {
-        Debug.Log(pjManager.DiceText);
         pjManager.DiceText.text = number.ToString();
     }
 
