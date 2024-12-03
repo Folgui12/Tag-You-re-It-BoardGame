@@ -70,28 +70,37 @@ public class PlayerSpawn : MonoBehaviour
     {
         PhotonView targetPhotonView = PhotonView.Find(playerID);
 
-        if(targetPhotonView != null)
+        if (targetPhotonView != null)
         {
+            // Variables para las imágenes (sprites) de cada jugador
+            Sprite player1Sprite = Resources.Load<Sprite>("Personaje1");
+            Sprite player2Sprite = Resources.Load<Sprite>("Personaje2");
+            Sprite player3Sprite = Resources.Load<Sprite>("Personaje3");
+            Sprite playerDefaultSprite = Resources.Load<Sprite>("Personaje4");
+
+            // Accede al SpriteRenderer del objeto
+            SpriteRenderer spriteRenderer = targetPhotonView.gameObject.GetComponent<SpriteRenderer>();
+
             switch (playerIndex)
             {
                 case 1:
-                    targetPhotonView.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-                    P1square.color = Color.red;
+                    spriteRenderer.sprite = player1Sprite;
+                    P1square.sprite = player1Sprite; // Si necesitas cambiar otra imagen relacionada
                     break;
 
                 case 2:
-                    targetPhotonView.gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
-                    P2square.color = Color.blue;
+                    spriteRenderer.sprite = player2Sprite;
+                    P2square.sprite = player2Sprite;
                     break;
 
                 case 3:
-                    targetPhotonView.gameObject.GetComponent<SpriteRenderer>().color = Color.yellow;
-                    P3square.color = Color.yellow;
+                    spriteRenderer.sprite = player3Sprite;
+                    P3square.sprite = player3Sprite;
                     break;
 
                 default:
-                    targetPhotonView.gameObject.GetComponent<SpriteRenderer>().color = Color.green;
-                    P4square.color = Color.green;
+                    spriteRenderer.sprite = playerDefaultSprite;
+                    P4square.sprite = playerDefaultSprite;
                     break;
             }
         }
