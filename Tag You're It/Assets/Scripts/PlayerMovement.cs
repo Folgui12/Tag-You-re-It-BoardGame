@@ -113,7 +113,7 @@ public class PlayerMovement : MonoBehaviour
     [PunRPC]
     private void SetDiceText(int number)
     {
-        pjManager.DiceText.text = number.ToString();
+        pjManager.ShowDiceResult(number);
     }
 
     [PunRPC]

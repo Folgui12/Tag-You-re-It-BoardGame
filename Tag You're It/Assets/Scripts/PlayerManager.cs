@@ -1,6 +1,8 @@
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using TMPro;
 
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
@@ -10,10 +12,12 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     public bool diceRolled;
     public int ID; 
     public PhotonView pv; 
-    public Image[] Keys = new Image[4];
-    public Text DiceText;
+    public Image[] Keys = new Image[4];   
 
     private int keysIndex;
+
+    private CanvasGroup DiceCanvasGroup; 
+    public Text DiceText;
 
     private GameObject PauseMenu;
     private bool PauseActive;
@@ -27,6 +31,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         PauseMenu = FindInactiveObjectWithTag("Pause");
         PauseActive = false;
         LeaveRoomButton = FindInactiveObjectWithTag("Leaver").GetComponent<Button>();
+        DiceText = FindInactiveObjectWithTag("DiceText").GetComponent<Text>();
+        DiceCanvasGroup = DiceText.GetComponentInParent<CanvasGroup>();
+        if (DiceCanvasGroup == null)
+        {
+                Debug.LogError("CanvasGroup no encontrado en el padre de DiceText.");
+        }
+        
     }
 
     // Start is called before the first frame update
@@ -99,6 +110,27 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
         if(keysIndex > 4)
             keysIndex = 4;
+    }
+
+    public void ShowDiceResult(int number)
+    {
+        if (DiceCanvasGroup == null)
+        {
+            Debug.LogError("DiceCanvasGroup no está asignado.");
+            return;
+        }
+
+        DiceText.text = number.ToString();
+
+        // Animación
+        DiceCanvasGroup.alpha = 0;
+        DiceCanvasGroup.transform.localScale = Vector3.zero;
+
+        DiceCanvasGroup.DOFade(1, 0.5f);
+        DiceCanvasGroup.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBounce);
+
+        // Opcional: Desaparece después de 2 segundos
+        DiceCanvasGroup.DOFade(0, 0.5f).SetDelay(2f);
     }
 
     [PunRPC]
