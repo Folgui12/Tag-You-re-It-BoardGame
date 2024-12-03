@@ -14,6 +14,15 @@ public class PlayerSpawn : MonoBehaviour
     [SerializeField] private Image P3square;
     [SerializeField] private Image P4square;
 
+    [SerializeField] private Sprite pj1;
+    [SerializeField] private Sprite pj2;
+    [SerializeField] private Sprite pj3;
+    [SerializeField] private Sprite pj4;
+    //Sprite player1Sprite = Resources.Load<Sprite>("PERSONAJE1");
+    // Sprite player2Sprite = Resources.Load<Sprite>("PERSONAJE2");
+    // Sprite player3Sprite = Resources.Load<Sprite>("PERSONAJE3");
+    // Sprite playerDefaultSprite = Resources.Load<Sprite>("PERSONAJE4");
+
     private PhotonView pv;
     private GameObject pj;
 
@@ -72,11 +81,7 @@ public class PlayerSpawn : MonoBehaviour
 
         if (targetPhotonView != null)
         {
-            // Variables para las imágenes (sprites) de cada jugador
-            Sprite player1Sprite = Resources.Load<Sprite>("Personaje1");
-            Sprite player2Sprite = Resources.Load<Sprite>("Personaje2");
-            Sprite player3Sprite = Resources.Load<Sprite>("Personaje3");
-            Sprite playerDefaultSprite = Resources.Load<Sprite>("Personaje4");
+           
 
             // Accede al SpriteRenderer del objeto
             SpriteRenderer spriteRenderer = targetPhotonView.gameObject.GetComponent<SpriteRenderer>();
@@ -84,23 +89,23 @@ public class PlayerSpawn : MonoBehaviour
             switch (playerIndex)
             {
                 case 1:
-                    spriteRenderer.sprite = player1Sprite;
-                    P1square.sprite = player1Sprite; // Si necesitas cambiar otra imagen relacionada
+                    spriteRenderer.sprite = pj1;
+                    // Si necesitas cambiar otra imagen relacionada
                     break;
 
                 case 2:
-                    spriteRenderer.sprite = player2Sprite;
-                    P2square.sprite = player2Sprite;
+                    spriteRenderer.sprite = pj2;
+                   
                     break;
 
                 case 3:
-                    spriteRenderer.sprite = player3Sprite;
-                    P3square.sprite = player3Sprite;
+                    spriteRenderer.sprite = pj3;
+                   
                     break;
 
                 default:
-                    spriteRenderer.sprite = playerDefaultSprite;
-                    P4square.sprite = playerDefaultSprite;
+                    spriteRenderer.sprite = pj4;
+                    
                     break;
             }
         }
