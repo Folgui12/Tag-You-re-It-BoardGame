@@ -9,6 +9,7 @@ public class JoinServerUI : MonoBehaviourPunCallbacks
     [SerializeField] private Button joinButton;
     [SerializeField] private TMPro.TMP_InputField createInput;
     [SerializeField] private TMPro.TMP_InputField joinInput;
+    [SerializeField] private TMPro.TMP_Text errorMessage;
 
     void Awake()
     {
@@ -39,4 +40,35 @@ public class JoinServerUI : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.LoadLevel("BoardScene");
     }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        DisplayError("Error al crear sala: " + message);
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        DisplayError("Error al unirse a la sala: " + message);
+    }
+
+    private void DisplayError(string error)
+    {
+        if (errorMessage != null)
+        {
+            errorMessage.text = error;
+            errorMessage.gameObject.SetActive(true);
+
+            // Opcional: Ocultar el mensaje después de unos segundos
+            Invoke(nameof(HideError), 5f);
+        }
+    }
+
+    private void HideError()
+    {
+        if (errorMessage != null)
+        {
+            errorMessage.gameObject.SetActive(false);
+        }
+    }
+
 }
