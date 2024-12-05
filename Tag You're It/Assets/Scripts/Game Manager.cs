@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private List<AudioClip> Nums = new();
     [SerializeField] private AudioSource DiceNumberSpeaker;
+    [SerializeField] private AudioSource DiceRollSound;
 
     public static GameManager Instance;
     public Button ShortCut;
@@ -270,6 +271,7 @@ public class GameManager : MonoBehaviour
     {
         DiceNumberSpeaker.clip = Nums[diceNumber-1];
         DiceNumberSpeaker.Play();
+        //DiceRollSound.Play();
     }
 
     public void GameBegin()
