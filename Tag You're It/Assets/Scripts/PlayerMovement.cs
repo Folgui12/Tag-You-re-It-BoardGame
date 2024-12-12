@@ -1,8 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
 using Photon.Pun;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -114,7 +111,13 @@ public class PlayerMovement : MonoBehaviour
     private void SetDiceText(int number)
     {
         pjManager.DiceText.text = number.ToString();
+        if(number > 0)
+        {
+            ShowMovementNumber.Instance.DiceShower.SetActive(true);
+            ShowMovementNumber.Instance.SetRPCNumber(number);
+        }
     }
+
 
     [PunRPC]
     public void MovePlayer()

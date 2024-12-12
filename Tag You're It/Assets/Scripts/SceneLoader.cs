@@ -35,6 +35,6 @@ public class SceneLoader : MonoBehaviourPunCallbacks
 
     public void GoToMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("Main Menu");
     }
 }

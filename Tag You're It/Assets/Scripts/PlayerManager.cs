@@ -45,7 +45,26 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             PauseMenu.SetActive(PauseActive);
         }
             
-    }  
+    }
+
+    public override void OnLeftRoom()
+    {
+        //pv.RPC("KickPlayer", RpcTarget.AllBuffered);
+        if(!pv.IsMine)
+        {
+            PhotonNetwork.LeaveRoom();
+            SceneLoader.Instance.GoToMenu();
+        }
+    }
+
+    [PunRPC]
+    private void KickPlayer()
+    {
+        PhotonNetwork.LeaveRoom();
+        SceneLoader.Instance.GoToMenu();
+    }
+
+    
 
     GameObject FindInactiveObjectWithTag(string tag)
     {

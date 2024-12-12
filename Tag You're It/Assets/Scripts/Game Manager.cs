@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using Photon.Pun;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Photon.Realtime;
 
 public class GameManager : MonoBehaviour
 {
@@ -53,10 +54,12 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if(PhotonNetwork.CurrentRoom.PlayerCount >= 2 && PhotonNetwork.IsMasterClient && !GameStarted)
-        {
             StartGame.SetActive(true);
-        }
+        else
+            StartGame.SetActive(false);
     }
+
+    
 
     public void ActiveCrossRoadButtons()
     {
